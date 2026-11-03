@@ -1,0 +1,678 @@
+/* =========================================================
+   ÍNDICE
+   1. Variables (colores, tipografía, formas)
+   2. Base
+   3. Header
+   4. Aviso de error
+   5. Secciones (reglas comunes + color de cada una)
+   6. Sección Configuración
+   7. Sección Barra de estado
+   8. Sección Juego (tarjeta de pregunta)
+   9. Sección Ranking
+   10. Footer
+   11. Responsive
+   ========================================================= */
+
+
+/* =========================================================
+   1. VARIABLES
+   Convención: --categoria-grupo-nombre
+   ========================================================= */
+:root {
+  /* Fondos */
+  --color-fondo-pagina: #0f172a;
+  --color-fondo-tarjeta: #1e293b;
+  --color-fondo-campo: #0f172a;
+  --color-fondo-hover: #334155;
+
+  /* Bordes */
+  --color-borde-suave: #334155;
+  --color-borde-fuerte: #475569;
+
+  /* Texto */
+  --color-texto-principal: #f8fafc;
+  --color-texto-secundario: #cbd5e1;
+  --color-texto-tenue: #94a3b8;
+
+  /* Paleta de marca */
+  --color-marca-violeta: #7c3aed;
+  --color-marca-indigo: #4f46e5;
+  --color-marca-indigo-claro: #6366f1;
+  --color-marca-naranja: #ea580c;
+  --color-marca-naranja-claro: #f97316;
+  --color-marca-amarillo: #facc15;
+  --color-marca-cian: #38bdf8;
+
+  /* Estados (acierto / error) */
+  --color-estado-exito: #10b981;
+  --color-estado-exito-fondo: #065f46;
+  --color-estado-error: #ef4444;
+  --color-estado-error-fondo: #991b1b;
+  --color-estado-error-texto: #fecaca;
+
+  /* Color de acento de cada sección */
+  --color-seccion-config: var(--color-marca-violeta);
+  --color-seccion-estado: var(--color-marca-cian);
+  --color-seccion-juego: var(--color-marca-naranja);
+  --color-seccion-ranking: var(--color-marca-amarillo);
+
+  /* Medallas del ranking */
+  --color-medalla-oro: #facc15;
+  --color-medalla-plata: #cbd5e1;
+  --color-medalla-bronce: #fb923c;
+
+  /* Tipografía */
+  --fuente-titulos: 'Righteous', cursive, sans-serif;
+  --fuente-cuerpo: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Formas */
+  --radio-chico: 10px;
+  --radio-medio: 14px;
+  --radio-grande: 18px;
+  --radio-pildora: 9999px;
+}
+
+
+/* =========================================================
+   2. BASE
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-fondo-pagina);
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.18), transparent 45%),
+    radial-gradient(circle at 100% 0%, rgba(234, 88, 12, 0.12), transparent 40%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--color-texto-principal);
+  font-family: var(--fuente-cuerpo);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 2.5rem;
+  overflow-x: hidden;
+}
+
+.aplicacion-trivia {
+  position: relative;
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+
+/* =========================================================
+   3. HEADER
+   ========================================================= */
+.encabezado-app {
+  text-align: center;
+  padding: 0.25rem 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.insignia-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.15rem;
+  background-color: #312e81;
+  border: 1.5px solid #4338ca;
+  border-radius: var(--radio-pildora);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e0e7ff;
+  margin-bottom: 0.65rem;
+}
+
+.insignia-marca svg {
+  width: 16px;
+  height: 16px;
+  fill: #a5b4fc;
+  flex-shrink: 0;
+}
+
+.titulo-app {
+  font-family: var(--fuente-titulos);
+  font-size: 2.35rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+  line-height: 1.18;
+}
+
+.titulo-app .acento-titulo {
+  color: var(--color-marca-amarillo);
+}
+
+
+/* =========================================================
+   4. AVISO DE ERROR
+   ========================================================= */
+#errorCarga {
+  display: none;
+  background-color: var(--color-estado-error-fondo);
+  border: 1.5px solid var(--color-estado-error);
+  border-radius: var(--radio-medio);
+  padding: 1rem 1.25rem;
+  color: var(--color-estado-error-texto);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#errorCarga.visible {
+  display: flex;
+}
+
+
+/* =========================================================
+   5. SECCIONES
+   Cada sección define --color-seccion-actual y la usa en su borde superior.
+   ========================================================= */
+.panel-configuracion,
+.barra-estado,
+.tarjeta-trivia,
+.ranking {
+  background-color: var(--color-fondo-tarjeta);
+  border: 1px solid var(--color-borde-suave);
+  border-top: 4px solid var(--color-seccion-actual);
+  border-radius: var(--radio-grande);
+}
+
+.panel-configuracion { --color-seccion-actual: var(--color-seccion-config); }
+.barra-estado        { --color-seccion-actual: var(--color-seccion-estado); }
+.tarjeta-trivia      { --color-seccion-actual: var(--color-seccion-juego); }
+.ranking             { --color-seccion-actual: var(--color-seccion-ranking); }
+
+
+/* =========================================================
+   6. SECCIÓN CONFIGURACIÓN (nombre, franquicia, dificultad)
+   ========================================================= */
+.panel-configuracion {
+  padding: 1.25rem 1.6rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.grupo-configuracion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  justify-content: center;
+}
+
+.etiqueta-configuracion {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-marca-amarillo);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Campos de texto y selector comparten estilo */
+#nombreJugador,
+#selectorFranquicia {
+  width: 100%;
+  height: 48px;
+  background-color: var(--color-fondo-campo);
+  border: 1.5px solid var(--color-borde-suave);
+  border-radius: var(--radio-chico);
+  color: #ffffff;
+  font-family: var(--fuente-cuerpo);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0 1.1rem;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#nombreJugador:hover,
+#nombreJugador:focus,
+#selectorFranquicia:hover,
+#selectorFranquicia:focus {
+  border-color: var(--color-marca-indigo-claro);
+}
+
+#nombreJugador:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Selector de franquicia con flecha amarilla */
+.contenedor-selector {
+  position: relative;
+  width: 100%;
+}
+
+#selectorFranquicia {
+  padding-right: 2.75rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.contenedor-selector::after {
+  content: '';
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid var(--color-marca-amarillo);
+  pointer-events: none;
+}
+
+/* Botones de dificultad */
+.cuadricula-niveles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  height: 48px;
+}
+
+.btn-nivel {
+  background-color: var(--color-fondo-campo);
+  border: 1.5px solid var(--color-borde-suave);
+  border-radius: var(--radio-chico);
+  color: var(--color-texto-secundario);
+  font-family: var(--fuente-cuerpo);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0 0.5rem;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-nivel:hover {
+  border-color: var(--color-borde-fuerte);
+  color: #ffffff;
+  background-color: var(--color-fondo-tarjeta);
+}
+
+.btn-nivel.activo,
+.btn-nivel:focus {
+  border-color: var(--color-marca-indigo-claro);
+  background-color: var(--color-marca-indigo);
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   7. SECCIÓN BARRA DE ESTADO (nivel, progreso, puntaje, tiempo)
+   ========================================================= */
+.barra-estado {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem 0.5rem;
+  align-items: center;
+  padding: 0.95rem 1.6rem;
+}
+
+.elemento-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+}
+
+.etiqueta-estado {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--color-texto-tenue);
+}
+
+.valor-estado {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* Un color por dato */
+#nivelActual    { color: var(--color-marca-amarillo); }
+#numeroPregunta { color: var(--color-marca-cian); }
+#puntaje        { color: var(--color-estado-exito); font-weight: 900; }
+#tiempo         { color: var(--color-marca-naranja-claro); }
+
+
+/* =========================================================
+   8. SECCIÓN JUEGO (imagen, pregunta, opciones, botón siguiente)
+   ========================================================= */
+.tarjeta-trivia {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+/* Columna izquierda: categoría + imagen */
+.col-visual-trivia {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insignia-categoria {
+  align-self: flex-start;
+  padding: 0.42rem 1.15rem;
+  background-color: var(--color-marca-violeta);
+  border-radius: var(--radio-pildora);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+}
+
+.marco-imagen {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radio-medio);
+  overflow: hidden;
+  background-color: var(--color-fondo-campo);
+  border: 1px solid var(--color-borde-suave);
+  flex: 1 1 auto;
+  min-height: 230px;
+}
+
+#imagenPregunta {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Columna derecha: pregunta y opciones */
+.col-contenido-trivia {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+#pregunta {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #ffffff;
+  min-height: 3.2rem;
+  display: flex;
+  align-items: center;
+}
+
+#opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.opcion-btn {
+  width: 100%;
+  background-color: var(--color-fondo-campo);
+  border: 1.5px solid var(--color-borde-suave);
+  border-radius: var(--radio-chico);
+  color: #f1f5f9;
+  font-family: var(--fuente-cuerpo);
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 0.9rem 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.opcion-btn:hover:not(:disabled) {
+  background-color: var(--color-fondo-hover);
+  border-color: var(--color-marca-indigo-claro);
+  color: #ffffff;
+}
+
+.opcion-btn:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.opcion-btn.correcta {
+  background-color: var(--color-estado-exito-fondo);
+  border-color: var(--color-estado-exito);
+  color: #ffffff;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.opcion-btn.incorrecta {
+  background-color: var(--color-estado-error-fondo);
+  border-color: var(--color-estado-error);
+  color: #ffffff;
+  opacity: 1;
+}
+
+#resultado {
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  min-height: 1.4rem;
+  padding: 0.3rem;
+  border-radius: 8px;
+}
+
+#siguiente {
+  width: 100%;
+  height: 54px;
+  background-color: var(--color-marca-naranja);
+  color: #ffffff;
+  font-family: var(--fuente-titulos);
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radio-chico);
+  padding: 0 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+#siguiente svg {
+  flex-shrink: 0;
+  display: block;
+}
+
+#siguiente:hover:not(:disabled) {
+  background-color: var(--color-marca-naranja-claro);
+}
+
+#siguiente:active:not(:disabled) {
+  background-color: #c2410c;
+}
+
+#siguiente:disabled {
+  background-color: var(--color-borde-fuerte);
+  color: var(--color-texto-tenue);
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   9. SECCIÓN RANKING
+   ========================================================= */
+.ranking {
+  padding: 1.25rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ranking-vacio {
+  color: var(--color-texto-tenue);
+  font-size: 0.92rem;
+}
+
+.ranking table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.ranking th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--color-texto-tenue);
+  padding: 0.4rem 0.5rem;
+}
+
+.ranking td {
+  padding: 0.55rem 0.5rem;
+  border-top: 1px solid var(--color-borde-suave);
+}
+
+/* Podio: posiciones 1, 2 y 3 */
+.ranking tbody tr:nth-child(-n+3) td:first-child {
+  font-weight: 900;
+}
+.ranking tbody tr:nth-child(1) td:first-child { color: var(--color-medalla-oro); }
+.ranking tbody tr:nth-child(2) td:first-child { color: var(--color-medalla-plata); }
+.ranking tbody tr:nth-child(3) td:first-child { color: var(--color-medalla-bronce); }
+
+
+/* =========================================================
+   10. FOOTER
+   ========================================================= */
+.pie-app {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.5rem 1rem 0;
+  color: var(--color-texto-tenue);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+
+.pie-principal {
+  font-weight: 600;
+  color: var(--color-texto-secundario);
+}
+
+.pie-secundario {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+}
+
+
+/* =========================================================
+   11. RESPONSIVE
+   ========================================================= */
+@media (min-width: 600px) {
+  /* Barra de estado en una sola fila: primero a la izquierda, último a la derecha */
+  .barra-estado {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .elemento-estado:first-child {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .elemento-estado:last-child {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    padding: 2.5rem 2rem 3rem;
+  }
+  .titulo-app {
+    font-size: 3.1rem;
+    letter-spacing: 0.04em;
+  }
+  .panel-configuracion {
+    grid-template-columns: 1fr 1fr;
+    padding: 1.4rem 1.8rem;
+    gap: 1.75rem;
+  }
+  /* Nombre y franquicia en la primera fila; dificultad ocupa todo el ancho */
+  .grupo-configuracion:last-child {
+    grid-column: 1 / -1;
+  }
+  .barra-estado {
+    padding: 1.1rem 2rem;
+  }
+  .etiqueta-estado {
+    font-size: 0.75rem;
+  }
+  .valor-estado {
+    font-size: 1.3rem;
+  }
+  .tarjeta-trivia {
+    grid-template-columns: 1fr 1.15fr;
+    padding: 2rem;
+    gap: 2rem;
+  }
+  .marco-imagen {
+    height: 100%;
+    min-height: 310px;
+  }
+  #pregunta {
+    font-size: 1.38rem;
+    line-height: 1.4;
+  }
+  .opcion-btn {
+    padding: 1.05rem 1.35rem;
+    font-size: 1.02rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tarjeta-trivia {
+    grid-template-columns: 440px 1fr;
+    gap: 2.25rem;
+  }
+  .marco-imagen {
+    min-height: 350px;
+  }
+}
